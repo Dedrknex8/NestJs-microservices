@@ -20,7 +20,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
     }),
     ClientsModule.register([
       {
-        name : 'Service_A',
+        name : 'Service_Auth',
         transport : Transport.TCP,
         options : {
           host : 'localhost',
@@ -28,7 +28,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
         },
       },
       {
-        name : 'Service_B',
+        name : 'Service_Post',
         transport : Transport.TCP,
         options : {
           host : 'localhost',
