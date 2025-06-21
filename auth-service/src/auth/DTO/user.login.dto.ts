@@ -10,8 +10,6 @@ export class LoginDto{
 
     @IsNotEmpty({message : "Password cannot be empty"})
     @IsString({message: 'Password must be a string'})
-   
-    
     password:string
 
 

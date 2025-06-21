@@ -1,44 +1,42 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { AppController } from './app.controller';
+import { ConfigModule } from '@nestjs/config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { PassportModule } from '@nestjs/passport';
+import { JwtModule } from '@nestjs/jwt';
+import { JwtStrategy } from './stratergies/jwt.stratergy';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      isGlobal : true
+      isGlobal: true,
     }),
-    TypeOrmModule.forRoot({
-      type : 'postgres',
-      host : 'localhost',
-      port : 5432 ,
-      username  : 'postgress',
-      password  :'root',
-      database : ''
+    PassportModule,
+    JwtModule.register({
+      secret: process.env.JWT_SECRET, // or use ConfigService
+      signOptions: { expiresIn: '15m' },
     }),
     ClientsModule.register([
       {
-        name : 'Service_Auth',
-        transport : Transport.TCP,
-        options : {
-          host : 'localhost',
-          port : 3001,
+        name: 'AUTH_SERVICE',
+        transport: Transport.TCP,
+        options: {
+          host: 'localhost',
+          port: 3001,
         },
       },
       {
-        name : 'Service_Post',
-        transport : Transport.TCP,
-        options : {
-          host : 'localhost',
-          port : 3002
-        }
-      }
-
-    ])
+        name: 'Service_Post',
+        transport: Transport.TCP,
+        options: {
+          host: 'localhost',
+          port: 3002,
+        },
+      },
+    ]),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService,JwtStrategy],
 })
 export class AppModule {}

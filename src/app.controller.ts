@@ -1,12 +1,25 @@
-import { Controller, Get } from '@nestjs/common';
-import { AppService } from './app.service';
+import { Controller, Post, Req, Body, UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from './guards/auth-guards';
+import { ClientProxy } from '@nestjs/microservices';
+import { Inject } from '@nestjs/common';
 
-@Controller()
+@Controller('posts')
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(
+    @Inject('Service_Post') private postClient: ClientProxy
+  ) {}
 
-  @Get()
-  getHello(): string {
-    return this.appService.getHello();
+  @UseGuards(JwtAuthGuard)
+  @Post('create')
+  async createPost(@Req() req, @Body() body: { title: string; content: string }) {
+    const user = req.user; // this comes from decoded JWT by JwtAuthGuard
+
+    const payload = {
+      title: body.title,
+      content: body.content,
+      userId: user.id,
+    };
+
+    return this.postClient.send({ cmd: 'create-post' }, payload);
   }
 }

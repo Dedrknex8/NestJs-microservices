@@ -2,7 +2,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { PostEntity } from 'src/Entity/post.enity';
+import { PostEntity } from '../Entity/post.enity';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable()
 export class PostService {
@@ -10,25 +11,27 @@ export class PostService {
     @InjectRepository(PostEntity)
     private postRepo: Repository<PostEntity>,
 
-    @Inject('Auth_Service')
-    private authClient: ClientProxy, // 👈 Injected microservice client
+    @Inject('AUTH_SERVICE')
+    private authClient: ClientProxy
   ) {}
 
   async createPost(data: { title: string; content: string; userId: number }) {
-    // Ask auth-service for user info
-    const user = await this.authClient
-      .send({ cmd: 'get-user' }, data.userId)
-      .toPromise();
+    const user = await firstValueFrom(
+      this.authClient.send({ cmd: 'get-user' }, data.userId)
+    );
 
     if (!user) throw new Error('User not found');
 
-    const newPost = await this.postRepo.create({
+    const newPost = this.postRepo.create({
       title: data.title,
       content: data.content,
       userId: user.id,
       authorName: user.username,
     });
 
-    return this.postRepo.save(newPost);
+    const savedPost = await this.postRepo.save(newPost);
+    console.log('✅ Post saved:', savedPost);
+
+    return savedPost;
   }
 }

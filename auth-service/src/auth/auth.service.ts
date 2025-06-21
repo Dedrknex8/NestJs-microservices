@@ -1,16 +1,19 @@
 import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Repository } from 'typeorm';
-import { Role, UserEntity as User} from './Entities/user.entity';
+import { Role, UserEntity } from './Entities/user.entity';
 import { JwtService } from '@nestjs/jwt';
 import * as bcyrpt from 'bcrypt'
 import { RegisterDto } from './DTO/user.register.dto';
 import { LoginDto } from './DTO/user.login.dto';
+import { MessagePattern } from '@nestjs/microservices';
+import { InjectRepository } from '@nestjs/typeorm';
 @Injectable()
 export class AuthService {
     constructor(
         private  configService : ConfigService,
-        private userRep : Repository<User>,
+        @InjectRepository(UserEntity)
+        private userRep : Repository<UserEntity>,
         private jwtService : JwtService
     ){}
 
@@ -71,7 +74,7 @@ export class AuthService {
 
     }
 
-    async generateToken(User : User): Promise<{accessToken:string,refreshToken:string}>{
+    async generateToken(User : UserEntity): Promise<{accessToken:string,refreshToken:string}>{
 
         const accessToken = await this.generateAccessToken(User);
         const refreshToken = await this.generateRefershToken(User);
@@ -82,7 +85,7 @@ export class AuthService {
         }
     }
 
-     async generateAccessToken(User:User) : Promise<string> {
+     async generateAccessToken(User:UserEntity) : Promise<string> {
         // this token will consits email,id, role
 
         const payload = {
@@ -97,7 +100,7 @@ export class AuthService {
         })
     }
     
-    async generateRefershToken(User:User) : Promise<string> {
+    async generateRefershToken(User:UserEntity) : Promise<string> {
         const payload = {
             id : User.id
         }
@@ -108,7 +111,7 @@ export class AuthService {
         })
     }
 
-
+    @MessagePattern({ cmd: 'get-user' })
     async findUserById(userId : number ){
         const getUser = await this.userRep.findOne({
               where : {id :  userId}
