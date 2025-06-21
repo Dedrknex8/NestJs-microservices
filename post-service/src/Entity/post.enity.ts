@@ -14,6 +14,9 @@ export class PostEntity{
 
     @Column()
     userId : string // realtion to user from auth service
+    
+    @Column({nullable : true})
+    authorName : string
 
      @CreateDateColumn()
     createdAt : Date;
