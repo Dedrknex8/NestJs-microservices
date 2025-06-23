@@ -3,7 +3,8 @@ import { ClientProxy } from '@nestjs/microservices';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PostEntity } from '../Entity/post.enity';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, NotFoundError } from 'rxjs';
+import { CreatePostDto } from '../DTO/create-post.dto';
 
 @Injectable()
 export class PostService {
@@ -15,7 +16,7 @@ export class PostService {
     private authClient: ClientProxy
   ) {}
 
-  async createPost(data: { title: string; content: string; userId: number }) {
+  async createPost(data : CreatePostDto & {userId : number}) {
     const user = await firstValueFrom(
       this.authClient.send({ cmd: 'get-user' }, data.userId)
     );
@@ -31,5 +32,17 @@ export class PostService {
 
     const savedPost = await this.postRepo.save(newPost);
     return savedPost;
+  }
+
+  async getPostById(postId:number) : Promise<PostEntity>{
+    const getPost = await this.postRepo.findOne({
+      where : {id : postId}
+    })
+
+    if(!getPost){
+      throw new NotFoundError('Post cannot be found')
+    }
+
+    return getPost;
   }
 }
