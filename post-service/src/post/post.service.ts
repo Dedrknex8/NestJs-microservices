@@ -30,8 +30,6 @@ export class PostService {
     });
 
     const savedPost = await this.postRepo.save(newPost);
-    console.log('✅ Post saved:', savedPost);
-
     return savedPost;
   }
 }

@@ -7,11 +7,11 @@ async function bootstrap() {
     transport: Transport.TCP,
     options: {
       host: 'localhost',
-      port: 3002, // must match the port in GATEWAY
+      port: 3002, 
     },
   });
 
   await app.listen();
-  console.log('✅ Post Microservice running on port 3002');
+  console.log(' Post Microservice running on port 3002');
 }
 bootstrap();

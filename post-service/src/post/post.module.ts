@@ -13,7 +13,7 @@ import { PostController } from './post.controller';
       port: 5432,
       username: 'postgres',
       password: 'root',
-      database: 'Microservice', // ← Replace this
+      database: 'Microservice', 
       entities: [PostEntity],
       synchronize: true, 
     }),
@@ -26,7 +26,7 @@ import { PostController } from './post.controller';
           host : 'localhost',
           port : 3001
         }
-      }
+      },
     ])
   ],
   providers: [PostService],
