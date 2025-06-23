@@ -67,7 +67,7 @@ export class AuthService {
        const {password, ...safeuser}  = user;
 
         return {
-            user : user,
+            user : safeuser,
             accessToken : accessToken,
             refreshToken : refreshToken
         }
