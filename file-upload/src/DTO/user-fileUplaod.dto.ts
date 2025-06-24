@@ -5,6 +5,11 @@ export class UserFileUploadDTO{
     @IsOptional()
     @IsString()
     @MaxLength(50)
-    description ?:string
+    description ?:string;
+
+    userId: string;
+    username: string;
+
+
     
 }

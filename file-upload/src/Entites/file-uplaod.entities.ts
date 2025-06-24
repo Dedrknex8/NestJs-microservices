@@ -3,7 +3,7 @@ import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeor
 
 @Entity()
 
-export class fileUploadEnity{
+export class File{
     @PrimaryGeneratedColumn()
     id: string
 
@@ -21,6 +21,9 @@ export class fileUploadEnity{
     
     @Column()
     publicId:string
+
+    @Column()
+    description:string
 
     @Column()
     userId:string

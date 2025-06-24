@@ -1,7 +1,7 @@
 import {v2 as cloudinary} from 'cloudinary'
 
 export const cloudinaryProvider ={
-    provider : 'CLOUDINARY',
+    provide : 'CLOUDINARY',
     useFactory: ()=>{
         cloudinary.config({
             cloud_name :process.env.CLOUDINARY_CLOUD_NAME,
