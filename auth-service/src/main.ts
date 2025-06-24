@@ -14,6 +14,6 @@ async function bootstrap() {
 
   await app.startAllMicroservices();
   await app.listen(3003)
-  console.log('Auth microservice is running on http:port 3003');
+  console.log('Auth microservice is running on http:[port]-> 3003');
 }
 bootstrap();

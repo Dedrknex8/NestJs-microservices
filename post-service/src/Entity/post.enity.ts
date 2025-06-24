@@ -13,12 +13,12 @@ export class PostEntity{
     content : string
 
     @Column()
-    userId : string // realtion to user from auth service
+    userId : string // REALTION FROM AUTH SERVICE I.E. USER
     
     @Column({nullable : true})
     authorName : string
 
-     @CreateDateColumn()
+    @CreateDateColumn()
     createdAt : Date;
 
     @UpdateDateColumn()
