@@ -21,7 +21,7 @@ export class AppController {
     const payload = {
       title: body.title,
       content: body.content,
-      userId: user.id,
+      userId: user.userId,
     };
 
     return this.postClient.send({ cmd: 'create-post' }, payload);
@@ -41,7 +41,7 @@ export class AppController {
     @Body('description') description: string
   ) {
     const user = req.user;
-
+    console.log("Your user is ",user)
     const uploaded = await this.cloudinaryService.uploadFile(file);
 
     const payload = {
@@ -51,7 +51,7 @@ export class AppController {
       url: uploaded.secure_url,
       publicId: uploaded.public_id,
       description,
-      userId: user.id,
+      userId: user.userId,
       username: user.username,
     };
 

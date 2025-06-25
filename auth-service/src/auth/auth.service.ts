@@ -34,7 +34,7 @@ export class AuthService {
             email  : registerDto.email,
             username : registerDto.username,
             password  : hashedPassword,
-            role : Role.User
+            role : Role.User,
         });
 
         const savedUser = await this.userRep.save(createNewUser)
@@ -91,7 +91,8 @@ export class AuthService {
         const payload = {
             email : User.email,
             id : User.id,
-            Role : User.role
+            Role : User.role,
+            username: User.username
         }
 
         return this.jwtService.sign(payload,{
@@ -102,7 +103,7 @@ export class AuthService {
     
     async generateRefershToken(User:UserEntity) : Promise<string> {
         const payload = {
-            id : User.id
+            id : User.id,
         }
 
         return this.jwtService.sign(payload,{
