@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CloudinaryService } from 'src/cloudinary/user-fileUpload.cloudinary.service';
-import { UserFileUploadDTO } from 'src/DTO/user-fileUplaod.dto';
-import {File } from 'src/Entites/file-uplaod.entities';
+import { CloudinaryService } from '../cloudinary/cloudinary.service';
+import { UserFileUploadDTO } from '../DTO/user-fileUplaod.dto';
+import {File } from '../Entites/file-uplaod.entities';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -28,4 +28,9 @@ export class FileService {
 
         return this.fileRepo.save(newnlyCreatedFile);
     }
+    async saveFileMetadata(data: UserFileUploadDTO) {
+    const file = this.fileRepo.create(data);
+    return this.fileRepo.save(file);
+    }
+
 }

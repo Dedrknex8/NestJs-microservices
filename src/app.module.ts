@@ -6,6 +6,9 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './stratergies/jwt.stratergy';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
+import { MulterModule } from '@nestjs/platform-express';
+import {memoryStorage} from 'multer'
 
 @Module({
   imports: [
@@ -17,6 +20,10 @@ import { JwtStrategy } from './stratergies/jwt.stratergy';
       secret: process.env.JWT_SECRET, // or use ConfigService
       signOptions: { expiresIn: '15m' },
     }),
+    CloudinaryModule,
+        MulterModule.register({
+          storage : memoryStorage()
+        }),
     ClientsModule.register([
       {
         name: 'AUTH_SERVICE',
@@ -34,6 +41,13 @@ import { JwtStrategy } from './stratergies/jwt.stratergy';
           port: 3002,
         },
       },
+      {
+        name : 'FILE_SERVICE',
+        options : {
+          host : 'localhost',
+          port : 3003
+        }
+      }
     ]),
   ],
   controllers: [AppController],

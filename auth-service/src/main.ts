@@ -13,7 +13,7 @@ async function bootstrap() {
   });
 
   await app.startAllMicroservices();
-  await app.listen(3003)
+  await app.listen(3005)
   console.log('Auth microservice is running on http:[port]-> 3003');
 }
 bootstrap();

@@ -5,7 +5,8 @@ import { ClientProxy } from '@nestjs/microservices';
 export class AppService {
   constructor (
     @Inject('AUTH_SERVICE') private readonly authClient : ClientProxy,
-    @Inject('Service_Post') private readonly postClient : ClientProxy
+    @Inject('Service_Post') private readonly postClient : ClientProxy,
+    @Inject('FILE_SERVICE') private readonly fileClient : ClientProxy,
   ){}
   
 }
