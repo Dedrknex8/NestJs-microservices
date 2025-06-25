@@ -6,6 +6,7 @@ import { CloudinaryModule, } from '../cloudinary/cloudinary.module';
 import { MulterModule } from '@nestjs/platform-express';
 import {memoryStorage} from 'multer'
 import { File } from '../Entites/file-uplaod.entities';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 @Module({
   imports: [
     TypeOrmModule.forFeature([File]),
@@ -13,6 +14,24 @@ import { File } from '../Entites/file-uplaod.entities';
     MulterModule.register({
       storage : memoryStorage()
     }),
+    ClientsModule.register([
+      {
+        name : 'AUTH_SERVICE',
+        transport : Transport.TCP,
+        options : {
+          host : 'localhost',
+          port : 3001
+        }
+      },
+      {
+        name : 'Post_Service',
+        transport : Transport.TCP,
+        options : {
+          host : 'localhost',
+          port : 3002
+        }
+      },
+    ]),
     
   ],
   providers: [FileService],

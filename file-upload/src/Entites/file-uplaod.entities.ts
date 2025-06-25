@@ -22,7 +22,7 @@ export class File{
     @Column()
     publicId:string
 
-    @Column()
+    @Column({nullable:true})
     description:string
 
     @Column()
