@@ -9,6 +9,7 @@ export class UserFileUploadDTO{
 
     userId: string;
     username: string;
+    
 
 
     

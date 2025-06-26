@@ -41,7 +41,6 @@ export class AppController {
     @Body('description') description: string
   ) {
     const user = req.user;
-    console.log("Your user is ",user)
     const uploaded = await this.cloudinaryService.uploadFile(file);
 
     const payload = {
@@ -56,6 +55,13 @@ export class AppController {
     };
 
     return this.fileClient.send({ cmd: 'save-file' }, payload);
+  }
+
+  @Get('file/:id')
+  @UseGuards(JwtAuthGuard)
+  async getFileById(@Param('id') id:number){
+    const file = await this.fileClient.send({cmd: 'get-file-by-id'},id).toPromise();
+    return file
   }
 
 }

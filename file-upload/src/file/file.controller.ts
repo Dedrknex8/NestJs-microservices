@@ -19,4 +19,9 @@ export class FileController {
     return this.fileService.saveFileMetadata(data);
     }
 
+  @MessagePattern({cmd: 'get-file-by-id'})
+  async getfilebyid(id:number){
+    return this.fileService.findFileById(id)
+  }
+
 }
