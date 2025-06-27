@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { UserFileUploadDTO } from '../DTO/user-fileUplaod.dto';
@@ -54,14 +54,17 @@ export class FileService {
         })
     }
 
-    async removeFile(id:number){
+    async removeFile(data:{id:number,userId:string}){
+        const {id,userId} = data;
         const fileToBERemoved = await this.fileRepo.findOne({
             where : {id}
         })
-
         if(!fileToBERemoved){
             throw new NotFoundError(`File with this id : ${id} cannot be found`)
         }
+        if (fileToBERemoved.userId !== userId) {
+        throw new UnauthorizedException('You are not authorized to delete this file');
+       }
 
 
         //DELTE FROM CLOUDINARY ALSO 

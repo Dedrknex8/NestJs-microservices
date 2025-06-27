@@ -30,8 +30,8 @@ export class FileController {
   }
 
   @MessagePattern({cmd : 'delete-file'})
-  async deleteFile(id : number ){
-    return this.fileService.removeFile(id)
+  async deleteFile(@Payload()data:{id : number , userId:string}){
+    return this.fileService.removeFile(data)
   }
 
 }

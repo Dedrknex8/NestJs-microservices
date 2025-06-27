@@ -1,4 +1,4 @@
-import { Controller, Post, Req, Body, UseGuards, Param, Get, UseInterceptors, UploadedFile, Res, Delete } from '@nestjs/common';
+import { Controller, Post, Req, Body, UseGuards, Param, Get, UseInterceptors, UploadedFile, Res, Delete, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
 import { JwtAuthGuard } from './guards/auth-guards';
 import { ClientProxy } from '@nestjs/microservices';
 import { Inject } from '@nestjs/common';
@@ -66,12 +66,24 @@ export class AppController {
 
   @Delete('file/delete/:id')
   @UseGuards(JwtAuthGuard)
-  async removeFile(@Param('id') id:number,@Res() resonse){
-    const file = await this.fileClient.send({cmd: 'delete-file'},id).toPromise();
+  async removeFile(@Param('id') id:number,@Req()req){
     
-    resonse.json({
-      message : 'File successfully delete'
-    })
+     try {
+    const userId = req.user.userId;
+    await this.fileClient
+      .send({ cmd: 'delete-file' }, { id, userId })
+      .toPromise();
+
+    return { message: 'File successfully deleted' };
+  } catch (err) {
+    console.error('Microservice error:', err);
+
+    if (err?.response?.statusCode === 401) {
+      throw new UnauthorizedException(err.response.message);
+    }
+
+    throw new InternalServerErrorException('Something went wrong');
+  }
   }
   @Get('file/:id')
   @UseGuards(JwtAuthGuard)
