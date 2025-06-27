@@ -7,9 +7,11 @@ import { MulterModule } from '@nestjs/platform-express';
 import {memoryStorage} from 'multer'
 import { File } from '../Entites/file-uplaod.entities';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { ConfigModule } from '@nestjs/config';
 @Module({
   imports: [
     TypeOrmModule.forFeature([File]),
+    ConfigModule.forRoot({isGlobal:true}),
     CloudinaryModule,
     MulterModule.register({
       storage : memoryStorage()

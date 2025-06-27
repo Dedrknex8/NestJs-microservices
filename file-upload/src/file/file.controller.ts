@@ -29,4 +29,9 @@ export class FileController {
     return this.fileService.getAllFile(userId);
   }
 
+  @MessagePattern({cmd : 'delete-file'})
+  async deleteFile(id : number ){
+    return this.fileService.removeFile(id)
+  }
+
 }

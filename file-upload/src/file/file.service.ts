@@ -54,4 +54,22 @@ export class FileService {
         })
     }
 
+    async removeFile(id:number){
+        const fileToBERemoved = await this.fileRepo.findOne({
+            where : {id}
+        })
+
+        if(!fileToBERemoved){
+            throw new NotFoundError(`File with this id : ${id} cannot be found`)
+        }
+
+
+        //DELTE FROM CLOUDINARY ALSO 
+        await this.cloudinaryService.deleteFile(fileToBERemoved.publicId);
+
+        //DELETE FROM DB
+        await this.fileRepo.remove(fileToBERemoved);
+
+    }
+
 }

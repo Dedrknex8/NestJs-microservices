@@ -1,4 +1,4 @@
-import { Controller, Post, Req, Body, UseGuards, Param, Get, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { Controller, Post, Req, Body, UseGuards, Param, Get, UseInterceptors, UploadedFile, Res, Delete } from '@nestjs/common';
 import { JwtAuthGuard } from './guards/auth-guards';
 import { ClientProxy } from '@nestjs/microservices';
 import { Inject } from '@nestjs/common';
@@ -57,13 +57,22 @@ export class AppController {
       url: uploaded.secure_url,
       publicId: uploaded.public_id,
       description,
-      userId: user.userId,
+      userId: user.userId.toString(),
       username: user.username,
     };
 
     return this.fileClient.send({ cmd: 'save-file' }, payload);
   }
 
+  @Delete('file/delete/:id')
+  @UseGuards(JwtAuthGuard)
+  async removeFile(@Param('id') id:number,@Res() resonse){
+    const file = await this.fileClient.send({cmd: 'delete-file'},id).toPromise();
+    
+    resonse.json({
+      message : 'File successfully delete'
+    })
+  }
   @Get('file/:id')
   @UseGuards(JwtAuthGuard)
   async getFileById(@Param('id') id:number){
@@ -71,6 +80,8 @@ export class AppController {
     return file
   }
 
+
+  
   
 
 }

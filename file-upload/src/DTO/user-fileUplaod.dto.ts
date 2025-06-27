@@ -1,16 +1,29 @@
-import { IsOptional, IsString, MaxLength } from "class-validator";
+import { IsString, IsOptional, IsNumber } from 'class-validator';
 
+export class UserFileUploadDTO {
+  @IsString()
+  originalName: string;
 
-export class UserFileUploadDTO{
-    @IsOptional()
-    @IsString()
-    @MaxLength(50)
-    description ?:string;
+  @IsNumber()
+  size: number;
 
-    userId: string;
-    username: string;
-    
+  @IsString()
+  mimeType: string;
 
+  @IsString()
+  url: string;
 
-    
+  @IsString()
+  publicId: string;
+
+  @IsOptional()
+  @IsString()
+  description?: string;
+
+  @IsString()
+  userId: string;
+
+  @IsOptional()
+  @IsString()
+  username?: string;
 }
