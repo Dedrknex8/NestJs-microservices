@@ -6,7 +6,7 @@ import {
   Body
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { MessagePattern, Payload } from '@nestjs/microservices';
+import { EventPattern, MessagePattern, Payload } from '@nestjs/microservices';
 import { FileService } from './file.service';
 import { UserFileUploadDTO } from '../DTO/user-fileUplaod.dto';
 
@@ -22,6 +22,11 @@ export class FileController {
   @MessagePattern({cmd: 'get-file-by-id'})
   async getfilebyid(id:number){
     return this.fileService.findFileById(id)
+  }
+
+  @MessagePattern({cmd:'get-all-file'})
+  async (@Payload()userId:string){
+    return this.fileService.getAllFile(userId);
   }
 
 }

@@ -46,4 +46,12 @@ export class FileService {
         return file
     }
 
+    async getAllFile(userId:string){
+        console.log("ypur user id is :",userId)
+        return  await this.fileRepo.find({
+            where : {userId: userId.toString() },
+            order : {created_At: 'DESC'}
+        })
+    }
+
 }

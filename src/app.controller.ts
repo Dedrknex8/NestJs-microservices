@@ -5,13 +5,20 @@ import { Inject } from '@nestjs/common';
 import { CloudinaryService } from './cloudinary/cloudinary.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 
-@Controller('posts')
+@Controller('auth/users')
 export class AppController {
   constructor(
     @Inject('Service_Post') private postClient: ClientProxy,
     @Inject('FILE_SERVICE') private fileClient : ClientProxy,
     private readonly cloudinaryService :  CloudinaryService
   ) {}
+
+  @Get('files')
+  @UseGuards(JwtAuthGuard)
+  async getallfile(@Req() req){
+    const payload = req.user.userId.toString();
+    return this.fileClient.send({cmd:'get-all-file'},payload).toPromise()
+  }
 
   @UseGuards(JwtAuthGuard)
   @Post('create')
@@ -63,5 +70,7 @@ export class AppController {
     const file = await this.fileClient.send({cmd: 'get-file-by-id'},id).toPromise();
     return file
   }
+
+  
 
 }
