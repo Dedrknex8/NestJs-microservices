@@ -67,7 +67,6 @@ export class AppController {
   @Delete('file/delete/:id')
   @UseGuards(JwtAuthGuard)
   async removeFile(@Param('id') id:number,@Req()req){
-    
      try {
     const userId = req.user.userId;
     await this.fileClient

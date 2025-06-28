@@ -25,7 +25,7 @@ export class FileController {
   }
 
   @MessagePattern({cmd:'get-all-file'})
-  async (@Payload()userId:string){
+  async getAllFile(@Payload()userId:string){
     return this.fileService.getAllFile(userId);
   }
 

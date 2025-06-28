@@ -29,6 +29,8 @@ export class FileService {
 
     //     return this.fileRepo.save(newnlyCreatedFile);
     // }
+    
+    //THIS METHOD WILL SAVE THE DATA DIRECTLTY TO DB
     async saveFileMetadata(data: UserFileUploadDTO) {
     const file = this.fileRepo.create(data);
     return this.fileRepo.save(file);
@@ -63,8 +65,8 @@ export class FileService {
             throw new NotFoundError(`File with this id : ${id} cannot be found`)
         }
         if (fileToBERemoved.userId !== userId) {
-        throw new UnauthorizedException('You are not authorized to delete this file');
-       }
+            throw new UnauthorizedException('You are not authorized to delete this file');
+        }
 
 
         //DELTE FROM CLOUDINARY ALSO 
