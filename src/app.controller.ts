@@ -4,20 +4,38 @@ import { ClientProxy } from '@nestjs/microservices';
 import { Inject } from '@nestjs/common';
 import { CloudinaryService } from './cloudinary/cloudinary.service';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager';
 
 @Controller('auth/users')
 export class AppController {
   constructor(
     @Inject('Service_Post') private postClient: ClientProxy,
     @Inject('FILE_SERVICE') private fileClient : ClientProxy,
-    private readonly cloudinaryService :  CloudinaryService
+    private readonly cloudinaryService :  CloudinaryService,
+    @Inject(CACHE_MANAGER) private cacheManger : Cache,
   ) {}
 
   @Get('files')
   @UseGuards(JwtAuthGuard)
   async getallfile(@Req() req){
     const payload = req.user.userId.toString();
-    return this.fileClient.send({cmd:'get-all-file'},payload).toPromise()
+    //IT WILL CACHE THE QUERY WITH FILE-1 FILE-2 LIKE THIS
+    const cacheKeys = `files-${payload}`;
+
+    //FIRST TRY TO GET FILES FROM CACHE MANAGER
+    const cache = await this.cacheManger.get(cacheKeys);
+
+    //IF CACHE FOUND THEN RETURN FROM CACHE
+    if(cache){
+      return {fromCache:true, data:cache}
+    }
+
+    const files = this.fileClient.send({cmd:'get-all-file'},payload).toPromise()
+    
+    //IF CACHED MISS THEN ADD TO THE CACHE 
+    await this.cacheManger.set(cacheKeys,files);
+
+    return {fromCache:false,data:files};
   }
 
   @UseGuards(JwtAuthGuard)
