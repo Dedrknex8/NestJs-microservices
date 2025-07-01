@@ -85,8 +85,18 @@ export class AppController {
   @Get('file/:id')
   @UseGuards(JwtAuthGuard)
   async getFileById(@Param('id') id:number){
+    const cacheKey = `files-${id}`
+
+    const cached = await this.cacheManger.get(cacheKey);
+
+    if(cacheKey){
+      return {fromCache:true, data:cached}
+    }
     const file = await this.fileClient.send({cmd: 'get-file-by-id'},id).toPromise();
-    return file
+    
+    await this.cacheManger.set(cacheKey, file);
+
+    return {fromCached:false, data:file};
   }
 
 
@@ -99,6 +109,10 @@ export class AppController {
     await this.fileClient
       .send({ cmd: 'delete-file' }, { id, userId })
       .toPromise();
+
+      //INVALID CACHE SO THAT THE DELETE FILE WILL NOT APPEAR AGAIN
+      await this.cacheManger.del(`files-${userId}`);
+      await this.cacheManger.del(`files-${id}`);
 
     return { message: 'File successfully deleted' };
   } catch (err) {
