@@ -82,6 +82,15 @@ export class AppController {
     return this.fileClient.send({ cmd: 'save-file' }, payload);
   }
 
+  @Get('file/:id')
+  @UseGuards(JwtAuthGuard)
+  async getFileById(@Param('id') id:number){
+    const file = await this.fileClient.send({cmd: 'get-file-by-id'},id).toPromise();
+    return file
+  }
+
+
+
   @Delete('file/delete/:id')
   @UseGuards(JwtAuthGuard)
   async removeFile(@Param('id') id:number,@Req()req){
@@ -102,12 +111,7 @@ export class AppController {
     throw new InternalServerErrorException('Something went wrong');
   }
   }
-  @Get('file/:id')
-  @UseGuards(JwtAuthGuard)
-  async getFileById(@Param('id') id:number){
-    const file = await this.fileClient.send({cmd: 'get-file-by-id'},id).toPromise();
-    return file
-  }
+  
 
 
   
